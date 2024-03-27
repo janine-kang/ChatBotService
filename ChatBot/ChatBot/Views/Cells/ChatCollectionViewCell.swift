@@ -10,7 +10,7 @@ import UIKit
 final class ChatCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "chat-cell-identifier"
-    
+
     private let label: UILabel = {
         let label = UILabel()
         
@@ -22,28 +22,42 @@ final class ChatCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
+    private let bubble: UIView = {
+        let bubble = UIView()
+        
+        bubble.layer.cornerRadius = 10
+        bubble.backgroundColor = .systemBlue
+        bubble.translatesAutoresizingMaskIntoConstraints = false
+        
+        return bubble
+    }()
+    
+    // MARK: - Life Cycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         configure()
     }
+    
     required init?(coder: NSCoder) {
         fatalError("not implemented")
     }
 }
 
 extension ChatCollectionViewCell {
-    func configure() {
-        contentView.addSubview(label)
+    private func configure() {
+        contentView.addSubviews(bubble, label)
         
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.systemGray.cgColor
         let inset = CGFloat(10)
         
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: inset),
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -inset),
+            label.widthAnchor.constraint(lessThanOrEqualToConstant: 300),
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset)
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset),
+            
+            bubble.topAnchor.constraint(equalTo: label.topAnchor, constant: -inset),
+            bubble.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: inset),
+            bubble.leadingAnchor.constraint(equalTo: label.leadingAnchor, constant: -inset),
+            bubble.trailingAnchor.constraint(equalTo: label.trailingAnchor, constant: inset)
         ])
     }
     

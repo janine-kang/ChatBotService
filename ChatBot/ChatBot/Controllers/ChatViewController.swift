@@ -41,7 +41,7 @@ final class ChatViewController: UIViewController {
         return button
     }()
     
-    private let field: UITextView = {
+    private let inputField: UITextView = {
         let textView = UITextView()
         
         textView.layer.borderWidth = 1
@@ -53,7 +53,6 @@ final class ChatViewController: UIViewController {
         textView.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
         textView.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
 
-        
         textView.isScrollEnabled = false
         
         return textView
@@ -88,7 +87,7 @@ final class ChatViewController: UIViewController {
         configureNavigation()
         configureLayout()
         configureDataSource()
-        textViewDidChange(field)
+        textViewDidChange(inputField)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -151,15 +150,16 @@ private extension ChatViewController {
         button.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
         
         vstack.addArrangedSubviews(UIView(), button)
-        stack.addArrangedSubviews(field, vstack)
+        stack.addArrangedSubviews(inputField, vstack)
         view.addSubviews(collectionView, stack)
         
-        field.delegate = self
+        inputField.delegate = self
         
         NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: stack.topAnchor, constant: -10),
             
             stack.topAnchor.constraint(equalTo: collectionView.safeAreaLayoutGuide.bottomAnchor, constant: 20),
             stack.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -12),
@@ -217,9 +217,9 @@ private extension ChatViewController {
     }
     
     @objc func sendButtonTapped() {
-        if let text = field.text, !text.isEmpty {
+        if let text = inputField.text, !text.isEmpty {
             input.send(.sendButtonDidTap(prompt: text))
-            field.text?.removeAll()
+            inputField.text?.removeAll()
         }
     }
 }
@@ -239,3 +239,6 @@ extension ChatViewController: UITextViewDelegate {
         }
     }
 }
+
+
+
