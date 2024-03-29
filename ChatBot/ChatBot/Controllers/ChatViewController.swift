@@ -104,6 +104,8 @@ final class ChatViewController: UIViewController {
 private extension ChatViewController {
     func configureDataSource() {
         let cellRegistration = UICollectionView.CellRegistration<ChatCollectionViewCell, ChatMessage> { cell, indexPath, item in
+            
+            cell.updateChatPosition(to: item.role == .user ? .right : .left)
             cell.updateContent(item.content)
         }
         
@@ -161,7 +163,6 @@ private extension ChatViewController {
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: stack.topAnchor, constant: -10),
             
-            stack.topAnchor.constraint(equalTo: collectionView.safeAreaLayoutGuide.bottomAnchor, constant: 20),
             stack.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -12),
             stack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             stack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
