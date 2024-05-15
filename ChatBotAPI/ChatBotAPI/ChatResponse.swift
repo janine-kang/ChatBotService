@@ -12,7 +12,7 @@ public struct ChatResponse: Decodable {
     let object: String
     let created: Date
     let model: String
-    let systemFingerprint: String
+    let systemFingerprint: String?
     public let choices: [Choice]
     let usage: Usage
     
