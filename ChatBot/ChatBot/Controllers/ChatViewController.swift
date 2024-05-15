@@ -220,12 +220,18 @@ private extension ChatViewController {
     @objc func sendButtonTapped() {
         if let text = inputField.text, !text.isEmpty {
             input.send(.sendButtonDidTap(prompt: text))
-            inputField.text?.removeAll()
+            inputField.resignFirstResponder()
         }
     }
 }
 
 extension ChatViewController: UITextViewDelegate {
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        inputField.isScrollEnabled = false
+        inputField.text = ""
+        
+    }
     
     func textViewDidChange(_ textView: UITextView) {
         let size = CGSize(width: view.frame.width, height: .infinity)
