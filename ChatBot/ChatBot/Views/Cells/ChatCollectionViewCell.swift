@@ -16,13 +16,7 @@ final class ChatCollectionViewCell: UICollectionViewCell {
         case right
     }
     
-    private var position: Position = .right {
-        didSet {
-            bubble.backgroundColor = self.position == .right ? .systemBlue : .systemGreen
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10).isActive = self.position == .right ? false : true
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10).isActive = self.position == .right ? true : false
-        }
-    }
+    private var activeConstraints: [NSLayoutConstraint] = []
     
     private let label: UILabel = {
         let label = UILabel()
@@ -54,6 +48,14 @@ final class ChatCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("not implemented")
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        label.text = nil
+        NSLayoutConstraint.deactivate(activeConstraints)
+        activeConstraints.removeAll()
+    }
 }
 
 extension ChatCollectionViewCell {
@@ -63,7 +65,7 @@ extension ChatCollectionViewCell {
         let inset = CGFloat(10)
         
         NSLayoutConstraint.activate([
-            label.widthAnchor.constraint(lessThanOrEqualToConstant: 250),
+            label.widthAnchor.constraint(lessThanOrEqualTo: contentView.safeAreaLayoutGuide.widthAnchor, multiplier: 0.66),
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset),
             
@@ -75,7 +77,18 @@ extension ChatCollectionViewCell {
     }
     
     func updateChatPosition(to position: Position) {
-        self.position = position
+        var constraint: [NSLayoutConstraint] = []
+        
+        switch position {
+        case .left:
+            bubble.backgroundColor = .systemGreen
+            constraint += [label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10)]
+        case .right:
+            bubble.backgroundColor = .systemBlue
+            constraint += [label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)]
+        }
+        NSLayoutConstraint.activate(constraint)
+        activeConstraints = constraint
     }
     
     func updateContent(_ content: String) {
