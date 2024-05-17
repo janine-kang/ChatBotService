@@ -105,12 +105,17 @@ private extension ChatViewController {
     func configureDataSource() {
         let cellRegistration = UICollectionView.CellRegistration<ChatCollectionViewCell, ChatMessage> { cell, indexPath, item in
             
+            cell.prepareForReuse()
             cell.updateChatPosition(to: item.role == .user ? .right : .left)
             cell.updateContent(item.content)
         }
         
         dataSource = UICollectionViewDiffableDataSource(collectionView: chatCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+            
+            let deque = collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+            
+            
+            return deque
         })
     }
     

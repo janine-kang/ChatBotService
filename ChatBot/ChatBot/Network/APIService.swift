@@ -13,6 +13,24 @@ final class APIService {
             throw APIError.invalidResponse(code: (httpResponse as? HTTPURLResponse)?.statusCode)
         }
         
+        
+        do {
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(Response.self, from: data)
+            
+            return .success(result)
+        } catch let error {
+            return .failure(error)
+        }
+    }
+    
+    func executeWithMock<Response: Decodable>(request: URLRequest, session: URLSessionProtocol) async throws -> Result<Response, Error> {
+        let (data, httpResponse) = try await session.customData(for: request)
+        
+        guard let response = httpResponse as? HTTPURLResponse, response.statusCode == 200 else {
+            throw APIError.invalidResponse(code: (httpResponse as? HTTPURLResponse)?.statusCode)
+        }
+        
         do {
             let decoder = JSONDecoder()
             let result = try decoder.decode(Response.self, from: data)
